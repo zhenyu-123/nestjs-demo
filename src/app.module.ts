@@ -5,11 +5,12 @@ import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { SessionController } from './session/session.controller';
+import { UploadModule } from './upload/upload.module';
 
 
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, UploadModule],
   controllers: [AppController, UserController, SessionController],
   providers: [AppService, UserService],
 })

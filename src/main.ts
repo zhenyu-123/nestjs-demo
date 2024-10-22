@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { VersioningType } from '@nestjs/common';
-
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // 启用版本控制
   // app.enableVersioning({
@@ -21,7 +22,10 @@ async function bootstrap() {
       cookie: { maxAge: null },
     }),
   );
-
+  // 生成静态目录访问上传之后的图片   //http://localhost:3000/xiaoman/1729562587729.png
+  app.useStaticAssets(join(__dirname, 'images'), {
+    prefix: '/xiaoman',
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
