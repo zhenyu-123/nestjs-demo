@@ -4,6 +4,9 @@ import { VersioningType } from '@nestjs/common';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
+import { Response } from './common/response';
+import { HttpFilter } from './common/filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -26,6 +29,18 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, 'images'), {
     prefix: '/xiaoman',
   });
+
+  app.useGlobalInterceptors(new Response()); // 全局相响应拦截器
+  app.useGlobalFilters(new HttpFilter()); // 全局异常过滤器
+
+  const options = new DocumentBuilder()
+    .setTitle('小满接口文档')
+    .setDescription('描述，。。。')
+    .setVersion('1')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('/api-docs', app, document);
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
